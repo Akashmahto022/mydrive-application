@@ -18,17 +18,21 @@ import {
 } from '@/components/ui/input-otp';
 import Image from 'next/image';
 import { Button } from './ui/button';
+import { secertVerify, sendEmailOtp } from '@/lib/actions/user.actions';
+import { useRouter } from 'next/navigation';
 
 const OTPModal = ({
     email,
     accountId,
 }: {
     email: string;
-    accountId: unknown;
+    accountId: string;
 }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+
+    const router = useRouter()
 
     const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -36,6 +40,9 @@ const OTPModal = ({
 
         try {
             // call api for verify the otp
+            const sessionId = await secertVerify({ accountId, password })
+
+            if (sessionId) router.push("/")
         } catch (error) {
             console.log('Failed verify the otp', error);
         } finally {
@@ -44,6 +51,7 @@ const OTPModal = ({
     };
 
     const handleResendOTP = async () => {
+        await sendEmailOtp({email})
         // call api for resend otp
     };
 
