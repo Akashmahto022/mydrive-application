@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createAccount } from '@/lib/actions/user.actions';
+import OTPModal from './OTPModal';
 
 type FormType = 'sign-up' | 'sign-in';
 
@@ -33,7 +34,7 @@ const authFormSchema = (formType: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [accountId, setAccountId] = useState(null)
+  const [accountId, setAccountId] = useState(null);
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,17 +48,17 @@ const AuthForm = ({ type }: { type: FormType }) => {
   // Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    setErrorMessage("")
+    setErrorMessage('');
     try {
       const user = await createAccount({
-        fullName: values.fullName || "",
+        fullName: values.fullName || '',
         email: values.email,
-      })
-      setAccountId(user.accountId)
+      });
+      setAccountId(user.accountId);
     } catch (error) {
-      setErrorMessage("Faild to create account. Please tru again.")
-    }finally{
-      setIsLoading(false)
+      setErrorMessage('Faild to create account. Please tru again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -144,6 +145,10 @@ const AuthForm = ({ type }: { type: FormType }) => {
       </Form>
 
       {/* otp verification */}
+
+      {true && (
+        <OTPModal email={form.getValues('email')} accountId={accountId} />
+      )}
     </>
   );
 };
