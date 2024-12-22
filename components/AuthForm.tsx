@@ -34,7 +34,7 @@ const authFormSchema = (formType: FormType) => {
 const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [accountId, setAccountId] = useState("");
+  const [accountId, setAccountId] = useState('');
 
   const formSchema = authFormSchema(type);
   const form = useForm<z.infer<typeof formSchema>>({

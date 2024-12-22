@@ -69,28 +69,27 @@ export const createAccount = async ({
   return parseStringify({ accountId });
 };
 
-export const secertVerify = async ({ accountId, password }: {
-  accountId: string,
-  password: string
+export const secertVerify = async ({
+  accountId,
+  password,
+}: {
+  accountId: string;
+  password: string;
 }) => {
-
   try {
     const { account } = await createAdminClient();
 
     const session = await account.createSession(accountId, password);
 
-    (await cookies()).set("appwrite-session", session.secret, {
-      path: "/",
+    (await cookies()).set('appwrite-session', session.secret, {
+      path: '/',
       httpOnly: true,
-      sameSite: "strict",
-      secure: true
-    })
+      sameSite: 'strict',
+      secure: true,
+    });
 
-
-    return parseStringify({ sessionId: session.$id })
-
+    return parseStringify({ sessionId: session.$id });
   } catch (error) {
-    habdleError(error, "Failed to verigy the secret")
+    habdleError(error, 'Failed to verigy the secret');
   }
-
-}
+};
