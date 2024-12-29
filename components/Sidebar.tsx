@@ -6,8 +6,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import path from 'path';
 import React from 'react';
+interface Props {
+  fullName: string;
+  avatar: string;
+  email: string
+}
 
-const Sidebar = ({ user }) => {
+
+const Sidebar = ({ fullName, email, avatar }: Props) => {
   const pathname = usePathname();
 
   return (
