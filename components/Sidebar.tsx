@@ -1,12 +1,14 @@
 'use client';
-import { navItems } from '@/constants';
+import { avatarPlaceholderUrl, navItems } from '@/constants';
+import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import path from 'path';
 import React from 'react';
 
-const Sidebar = () => {
-  const pathname = usePathname()
+const Sidebar = ({ user }) => {
+  const pathname = usePathname();
 
   return (
     <aside className="sidebar">
@@ -32,10 +34,10 @@ const Sidebar = () => {
           {
             navItems.map(({ url, name, icon }) => (
 
-              <Link href={url}>
-                <li>
-                  <Image src={icon} alt={name} width={24} height={24} />
-                  <p>{name}</p>
+              <Link key={name} href={url} className='lg:w-full'>
+                <li className={cn("sidebar-nav-item", pathname === url && "shad-active")}>
+                  <Image src={icon} alt={name} width={24} height={24} className={cn('nav-icon', pathname === url && "nav-icon-active")} />
+                  <p className='hidden lg:block'>{name}</p>
                 </li>
               </Link>
             ))
@@ -43,6 +45,17 @@ const Sidebar = () => {
         </ul>
 
       </nav>
+      <Image src={"/assets/images/files-2.png"} alt='logo' width={506} height={418} className='w-full' />
+
+      <div className='sidebar-user-info'>
+        <Image src={avatarPlaceholderUrl} alt='Avatar' width={44} height={44} className='sidebar-user-avatar' />
+
+        <div className='hidden lg:block'>
+          <p className='subtitle-2 capitalize'>{fullName}</p>
+          <p className='caption'>{email}</p>
+        </div>
+
+      </div>
     </aside>
   );
 };

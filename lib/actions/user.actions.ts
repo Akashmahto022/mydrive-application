@@ -1,11 +1,15 @@
 'use server';
 
 import { ID, Query } from 'node-appwrite';
-import { createAdminClient } from '../appwrite';
+import { createAdminClient, createSessionClient } from '../appwrite';
 import { appwriteConfig } from '../appwrite/config';
 import { parseStringify } from '../utils';
 import { cookies } from 'next/headers';
 import { strict } from 'assert';
+import { avatarPlaceholderUrl } from '@/constants';
+import { Quando } from 'next/font/google';
+import { use } from 'react';
+import { parse } from 'postcss';
 
 const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient();
@@ -59,8 +63,7 @@ export const createAccount = async ({
       {
         fullName,
         email,
-        avatar:
-          'https://api-private.atlassian.com/users/9cea692d0a59c5e100680165cbbeb496/avatar',
+        avatar: avatarPlaceholderUrl,
         accountId,
       }
     );
@@ -93,3 +96,20 @@ export const secertVerify = async ({
     habdleError(error, 'Failed to verigy the secret');
   }
 };
+
+
+export const getCurrentUser = async () => {
+  const { databases, account } = await createSessionClient();
+
+  const result = await account.get();
+
+  const user = await databases.listDocuments(
+    appwriteConfig.databaseId,
+    appwriteConfig.userCollectionId,
+    [Query.equal('accountId', result.$id)]
+  );
+
+  if (user.total <= 0) return null;
+
+  return parseStringify(user.documents[0])
+}
