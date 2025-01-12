@@ -24,7 +24,6 @@ const getUserByEmail = async (email: string) => {
 };
 
 const habdleError = (error: unknown, message: string) => {
-  console.log(error, message);
 
   throw error;
 };

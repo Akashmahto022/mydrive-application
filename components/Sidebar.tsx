@@ -14,7 +14,7 @@ interface Props {
 
 
 const Sidebar = ({ fullName, email, avatar }: Props) => {
-  const pathname = usePathname();
+  const pathName = usePathname();
 
   return (
     <aside className="sidebar">
@@ -41,8 +41,8 @@ const Sidebar = ({ fullName, email, avatar }: Props) => {
             navItems.map(({ url, name, icon }) => (
 
               <Link key={name} href={url} className='lg:w-full'>
-                <li className={cn("sidebar-nav-item", pathname === url && "shad-active")}>
-                  <Image src={icon} alt={name} width={24} height={24} className={cn('nav-icon', pathname === url && "nav-icon-active")} />
+                <li className={cn("sidebar-nav-item", pathName === url && "shad-active")}>
+                  <Image src={icon} alt={name} width={24} height={24} className={cn('nav-icon', pathName === url && "nav-icon-active")} />
                   <p className='hidden lg:block'>{name}</p>
                 </li>
               </Link>
