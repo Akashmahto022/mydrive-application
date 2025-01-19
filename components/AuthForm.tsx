@@ -56,7 +56,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
       });
       setAccountId(user.accountId);
     } catch (error) {
-      setErrorMessage('Faild to create account. Please tru again.');
+      setErrorMessage('Faild to create account. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +126,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
               />
             )}
           </Button>
-          {errorMessage && <p>*{errorMessage}</p>}
+          {errorMessage && <p className='text-red text-2xl font-normal' >*{errorMessage}</p>}
 
           <div className="body-2 flex justify-center">
             <p className="text-light-100">
