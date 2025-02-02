@@ -1,18 +1,14 @@
 'use server';
 
-import { Account, ID, Query } from 'node-appwrite';
+import { ID, Query } from 'node-appwrite';
 import { createAdminClient, createSessionClient } from '../appwrite';
 import { appwriteConfig } from '../appwrite/config';
 import { parseStringify } from '../utils';
 import { cookies } from 'next/headers';
-import { strict } from 'assert';
 import { avatarPlaceholderUrl } from '@/constants';
-import { Quando } from 'next/font/google';
-import { use } from 'react';
-import { parse } from 'postcss';
-import { error } from 'console';
 import { redirect } from 'next/navigation';
-import { string } from 'zod';
+import { parse } from 'path';
+import { error } from 'console';
 
 const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient();
@@ -20,7 +16,7 @@ const getUserByEmail = async (email: string) => {
   const result = await databases.listDocuments(
     appwriteConfig.databaseId,
     appwriteConfig.userCollectionId,
-    [Query.equal('email', ['email'])]
+    [Query.equal('email', [email])]
   );
 
   return result.total > 0 ? result.documents[0] : null;
@@ -43,15 +39,14 @@ export const sendEmailOtp = async ({ email }: { email: string }) => {
   }
 };
 
-export const createAccount = async ({
-  fullName,
-  email,
-}: {
-  fullName: string;
-  email: string;
-}) => {
+export const createAccount = async ({ fullName, email, }: { fullName: string; email: string; }) => {
+
+
   const existingUser = await getUserByEmail(email);
-  console.log(existingUser, "existing user")
+
+  if (existingUser) {
+    return parseStringify({ error: "user already exists with this email try to login" })
+  }
 
   const accountId = await sendEmailOtp({ email });
 
@@ -75,17 +70,14 @@ export const createAccount = async ({
   return parseStringify({ accountId });
 };
 
-export const secertVerify = async ({
-  accountId,
-  password,
-}: {
-  accountId: string;
-  password: string;
-}) => {
+export const secertVerify = async ({ accountId, password, }: { accountId: string; password: string; }) => {
   try {
     const { account } = await createAdminClient();
 
     const session = await account.createSession(accountId, password);
+    if (!session) {
+      return parseStringify({ error: "invalid otp" })
+    }
 
     (await cookies()).set('appwrite-session', session.secret, {
       path: '/',
@@ -132,9 +124,10 @@ export const signOutUser = async () => {
 
 export const signInUser = async ({ email }: { email: string }) => {
   try {
-    console.log("signin user")
     const existingUser = await getUserByEmail(email);
-    console.log(existingUser)
+    if (!existingUser) {
+      return parseStringify({ error: "user don't exists with this email try to sign - up first" })
+    }
     if (existingUser) {
       await sendEmailOtp({ email });
       return parseStringify({ accountId: existingUser.accountId })

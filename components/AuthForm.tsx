@@ -50,13 +50,23 @@ const AuthForm = ({ type }: { type: FormType }) => {
     setIsLoading(true);
     setErrorMessage('');
     try {
-      const user =
-        type === "sign-up" ? await createAccount({
+
+      if (type === 'sign-up') {
+        const user = await createAccount({
           fullName: values.fullName || '',
           email: values.email,
-        }) : await signInUser({ email: values.email })
-      setAccountId(user.accountId);
-      // console.log(values.email)
+        })
+        if (user?.error) {
+          setErrorMessage(user?.error)
+        }
+        setAccountId(user.accountId);
+      } else if (type === 'sign-in') {
+        const user = await signInUser({ email: values.email })
+        if (user?.error) {
+          setErrorMessage(user?.error)
+        }
+        setAccountId(user.accountId);
+      }
     } catch (error) {
       setErrorMessage('Faild to create account. Please try again.');
     } finally {

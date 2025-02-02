@@ -31,6 +31,8 @@ const OTPModal = ({
   const [isOpen, setIsOpen] = useState(true);
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successfully, setSuccessfully] = useState("")
 
   const router = useRouter();
 
@@ -41,10 +43,12 @@ const OTPModal = ({
     try {
       // call api for verify the otp
       const sessionId = await secertVerify({ accountId, password });
-
+      if (sessionId) {
+        setSuccessfully("otp verify successfully")
+      }
       if (sessionId) router.push('/');
     } catch (error) {
-      console.log('Failed verify the otp', error);
+      setErrorMessage('Failed verify the otp');
     } finally {
       setIsLoading(false);
     }
@@ -104,6 +108,8 @@ const OTPModal = ({
                 />
               )}
             </AlertDialogAction>
+            {errorMessage && <p className='text-red text-xl font-semibold' >*{errorMessage}</p>}
+            {successfully && <p className='text-green text-xl font-semibold' >*{successfully}</p>}
             <div className="subtitle-2 mt-2 text-center text-light-100">
               Didn't get a code?
               <Button
