@@ -25,7 +25,7 @@ const getUserByEmail = async (email: string) => {
   return result.total > 0 ? result.documents[0] : null;
 };
 
-const habdleError = (error: unknown, message: string) => {
+const handleError = (error: unknown, message: string) => {
 
   throw error;
 };
@@ -38,7 +38,7 @@ export const sendEmailOtp = async ({ email }: { email: string }) => {
 
     return session.userId;
   } catch (error) {
-    habdleError(error, 'failed to send email OTP');
+    handleError(error, 'failed to send email OTP');
   }
 };
 
@@ -94,7 +94,7 @@ export const secertVerify = async ({
 
     return parseStringify({ sessionId: session.$id });
   } catch (error) {
-    habdleError(error, 'Failed to verigy the secret');
+    handleError(error, 'Failed to verigy the secret');
   }
 };
 
@@ -121,8 +121,9 @@ export const signOutUser = async () => {
     await account.deleteSession('current');
     (await cookies()).delete("appwrite-session");
   } catch (error) {
-    habdleError(error, "Failed to sign out user");
+    handleError(error, "Failed to sign out user");
   } finally {
     redirect("/sign-in")
   }
 }
+
