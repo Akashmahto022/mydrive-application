@@ -12,6 +12,7 @@ import { use } from 'react';
 import { parse } from 'postcss';
 import { error } from 'console';
 import { redirect } from 'next/navigation';
+import { string } from 'zod';
 
 const getUserByEmail = async (email: string) => {
   const { databases } = await createAdminClient();
@@ -50,6 +51,7 @@ export const createAccount = async ({
   email: string;
 }) => {
   const existingUser = await getUserByEmail(email);
+  console.log(existingUser, "existing user")
 
   const accountId = await sendEmailOtp({ email });
 
@@ -124,6 +126,23 @@ export const signOutUser = async () => {
     handleError(error, "Failed to sign out user");
   } finally {
     redirect("/sign-in")
+  }
+}
+
+
+export const signInUser = async ({ email }: { email: string }) => {
+  try {
+    console.log("signin user")
+    const existingUser = await getUserByEmail(email);
+    console.log(existingUser)
+    if (existingUser) {
+      await sendEmailOtp({ email });
+      return parseStringify({ accountId: existingUser.accountId })
+    }
+
+    return parseStringify({ accountId: null, error: "user not found" })
+  } catch (error) {
+    handleError(error, "failed to sign in user")
   }
 }
 
