@@ -1,9 +1,14 @@
+import Card from '@/components/Card';
 import Sort from '@/components/Sort';
+import { getFiles } from '@/lib/actions/file.action';
+import { Models } from 'node-appwrite';
 import React from 'react'
 
 const page = async ({ params }: SearchParamProps) => {
 
     const type = (await params)?.type as string || "";
+
+    const files = await getFiles();
 
 
     return (
@@ -20,10 +25,16 @@ const page = async ({ params }: SearchParamProps) => {
                     </div>
                 </div>
             </section>
-            {
-                // render the file
+            {/* { render the file} */}
 
-            }
+            {files.total > 0 ? (
+                <section className='file-list'>
+                    {files.documents.map((file: Models.Document) => (
+                        <Card key={file.$id} file={file} />
+                    ))}
+                </section>
+            ) : <p className='empty-list'>No Files Uploaded</p>}
+
         </div>
     )
 }
