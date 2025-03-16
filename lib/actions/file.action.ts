@@ -69,7 +69,7 @@ const createQueries = (currentUser: Models.Document) => {
 
     // todo search , sort , limits
 
-    return queries
+    return queries;
 }
 
 export const getFiles = async () => {
@@ -82,11 +82,13 @@ export const getFiles = async () => {
 
         const queries = createQueries(currentUser);
 
-        const files = await databases.list(
+        const files = await databases.listDocuments(
             appwriteConfig.databaseId,
             appwriteConfig.filesCollectionId,
             queries,
         );
+
+        return parseStringify(files)
 
     } catch (error) {
         handleError(error, "failed to get files")
