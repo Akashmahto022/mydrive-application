@@ -74,11 +74,8 @@ const createQueries = (currentUser: Models.Document) => {
 
 export const getFiles = async () => {
     const { databases } = await createAdminClient();
-
     try {
         const currentUser = await getCurrentUser();
-
-        console.log(currentUser)
 
         if (!currentUser) throw new Error("user not found")
 
@@ -89,8 +86,6 @@ export const getFiles = async () => {
             appwriteConfig.filesCollectionId,
             queries,
         );
-
-        console.log(files)
 
         return parseStringify(files)
 
