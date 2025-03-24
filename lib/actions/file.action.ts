@@ -86,7 +86,7 @@ export const getFiles = async () => {
             appwriteConfig.filesCollectionId,
             queries,
         );
-
+        console.log({ files })
         return parseStringify(files)
 
     } catch (error) {
